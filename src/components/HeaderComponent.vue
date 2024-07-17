@@ -1,0 +1,474 @@
+<template>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+      <h1 class="logo me-auto"><a href="index.html">CykLang.net</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto" href="#hero">{{ $t('home') }}</a></li>
+          <li><a class="nav-link scrollto" href="#why">{{ $t('why') }}</a></li>
+          <li class="dropdown">
+            <a class="nav-link" href=""><span>{{ $t('case_study') }}</span> 
+              <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a class="nav-link scrollto" href="#introduction">{{ $t('introduction') }}</a></li>
+              <li><a class="nav-link scrollto" href="#cinemacase">{{ $t('cinema') }}</a></li>
+              <li><a class="nav-link scrollto" href="#weathercase">{{ $t('weather')}}</a></li>
+              <li><a class="nav-link scrollto" href="#blogcase">{{ $t('blog')}}</a></li>
+              <li><a class="nav-link scrollto" href="#comptacase">{{ $t('accounting') }}</a></li>
+            </ul>
+          </li>
+          <li><a class="nav-link scrollto" href="#cli">CLI</a></li>
+          <li><a class="nav-link scrollto" href="#schema">DevTools</a></li>
+          <li><a class="getstarted" href="../docs/guide/getting-started.html">Get Started</a></li>
+          <li class="dropdown">
+            <a class="nav-link" href=""> <span>{{ $t('language') }}</span><i class="bi bi-chevron-down"></i> </a>
+            <ul>
+              <li><a href="#/fr">Français</a></li>
+              <li><a href="#/en">English</a></li>
+              <li><a href="#/zh">中文</a></li>
+            </ul>
+          </li>
+
+
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+      <!-- .navbar -->
+    </div>
+  </header>
+  <!-- End Header -->
+</template>
+
+<script setup lang="ts">
+import "/src/assets/vendor/aos/aos.css";
+import "/src/assets/vendor/bootstrap/css/bootstrap.min.css";
+import "/src/assets/vendor/bootstrap-icons/bootstrap-icons.css";
+import "/src/assets/vendor/boxicons/css/boxicons.min.css";
+import "/src/assets/vendor/glightbox/css/glightbox.min.css";
+import "/src/assets/vendor/remixicon/remixicon.css";
+import "../assets/css/style.css";
+// import "../assets/css/style.css";
+// import "../assets/vendor/glightbox/css/glightbox.min.css";
+
+import { getLogger } from "loglevel";
+const logger = getLogger("HeaderComponent.vue");
+logger.setLevel("debug");
+
+import { onMounted } from "vue";
+
+onMounted(() => {
+
+  /**
+   * Navbar links active state on scroll
+   */
+  const navbarlinks = document.querySelectorAll('#navbar .scrollto')
+  const navbarLinksActive = () => {
+    const position = window.scrollY + 200;
+    navbarlinks.forEach((navbarlink) => {
+      if (!(navbarlink instanceof HTMLAnchorElement) || !navbarlink.hash) return
+      const section = document.querySelector(navbarlink.hash) as HTMLElement
+      if (!section) return
+      if (position >= section.offsetTop && position <= section.offsetTop + section.offsetHeight) {
+        navbarlink.classList.add('active')
+      }
+      else {
+        navbarlink.classList.remove('active')
+      }
+    })
+  }
+  window.addEventListener('load', navbarLinksActive)
+  window.addEventListener('scroll', navbarLinksActive)
+
+  /**
+   * Toggle .header-scrolled class to #header when page is scrolled
+   */
+
+  const selectHeader = document.querySelector('#header')
+  if (selectHeader) {
+    const headerScrolled = () => {
+      if (window.scrollY > 100) {
+        selectHeader.classList.add("header-scrolled");
+      } else {
+        selectHeader.classList.remove("header-scrolled");
+      }
+    }
+    window.addEventListener('load', headerScrolled)
+    window.addEventListener('scroll', headerScrolled)
+  }
+
+
+  /**
+   * Scrolls to an element with header offset
+   */
+  const scrollto = (anchor: string) => {
+    const header = document.querySelector("#header") as HTMLElement;
+    const offset = header?.offsetHeight;
+
+    const elementPos = (document.querySelector(anchor) as HTMLElement).offsetTop;
+    window.scrollTo({
+      top: elementPos - offset,
+      behavior: "smooth",
+    });
+  };
+
+
+
+  /**
+   * Mobile nav toggle
+   */
+
+  const mobileNavToogleButton = document.querySelector(".mobile-nav-toggle");
+
+  if (mobileNavToogleButton) {
+    mobileNavToogleButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      mobileNavToogle();
+    });
+  }
+
+  function mobileNavToogle() {
+    logger.debug('mobileNavToggle')
+    // document.querySelector("body")?.classList.toggle("mobile-nav-active");
+    document.querySelector('#navbar')?.classList.toggle("navbar-mobile")
+
+    mobileNavToogleButton?.classList.toggle("bi-list");
+    mobileNavToogleButton?.classList.toggle("bi-x");
+  }
+
+  /**
+   * Toggle mobile nav dropdowns
+   */
+
+  const navDropdowns = document.querySelectorAll(".navbar .dropdown > a");
+
+  navDropdowns.forEach((el) => {
+    el.addEventListener("click", (event) => {
+      // if (document.querySelector(".mobile-nav-active")) {
+      if (document.querySelector("#navbar")?.classList.contains("navbar-mobile")) {
+        event.preventDefault();
+        // el.classList.toggle("active");
+        el.nextElementSibling?.classList.toggle("dropdown-active");
+
+        // let dropDownIndicator = el.querySelector(".dropdown-indicator");
+        // dropDownIndicator?.classList.toggle("bi-chevron-up");
+        // dropDownIndicator?.classList.toggle("bi-chevron-down");
+      }
+    });
+  });
+
+  /**
+  * Scrool with ofset on links with a class name .scrollto
+  */
+
+  document.querySelectorAll('.scrollto').forEach((el: Element) => {
+    el.addEventListener("click", (event) => {
+      if (el instanceof HTMLAnchorElement) {
+        event.preventDefault()
+        const navbar = document.querySelector('#navbar')
+        if (navbar?.classList.contains('navbar-mobile')) {
+          navbar.classList.remove('navbar-mobile')
+          const navbarToggle = document.querySelector('.mobile-nav-toggle')
+          navbarToggle?.classList.toggle('bi-list')
+          navbarToggle?.classList.toggle('bi-x')
+        }
+        logger.debug('scrollto ' + el.hash)
+        scrollto(el.hash)
+      }
+    })
+
+
+    window.addEventListener('load', () => {
+
+    })
+  });
+
+
+  (function () {
+    "use strict";
+
+    /**
+     * Easy selector helper function
+     */
+    // const select = (el, all = false) => {
+    //   try {
+    //     el = el.trim();
+    //     if (all) {
+    //       return [...document.querySelectorAll(el)];
+    //     } else {
+    //       return document.querySelector(el);
+    //     }
+    //   }
+    //   catch (err) {
+    //     logger.error(err)
+    //   }
+
+    // };
+
+    /**
+     * Easy event listener function
+     */
+    // const on = (type, el, listener, all = false) => {
+    //   let selectEl = select(el, all);
+    //   if (selectEl) {
+    //     if (all) {
+    //       selectEl.forEach((e) => e.addEventListener(type, listener));
+    //     } else {
+    //       selectEl.addEventListener(type, listener);
+    //     }
+    //   }
+    // };
+
+    /**
+     * Easy on scroll event listener
+     */
+    // const onscroll = (el, listener) => {
+    //   el.addEventListener("scroll", listener);
+    // };
+
+    /**
+     * Navbar links active state on scroll
+     */
+    // let navbarlinks = select("#navbar .scrollto", true);
+    // const navbarlinksActive = () => {
+    //   let position = window.scrollY + 200;
+    //   navbarlinks.forEach((navbarlink) => {
+    //     if (!navbarlink.hash) return;
+    //     let section = select(navbarlink.hash);
+    //     if (!section) return;
+    //     if (
+    //       position >= section.offsetTop &&
+    //       position <= section.offsetTop + section.offsetHeight
+    //     ) {
+    //       navbarlink.classList.add("active");
+    //     } else {
+    //       navbarlink.classList.remove("active");
+    //     }
+    //   });
+    // };
+    // window.addEventListener("load", navbarlinksActive);
+    // onscroll(document, navbarlinksActive);
+
+    /**
+     * Scrolls to an element with header offset
+     */
+    // const scrollto = (el) => {
+    //   let header = select("#header");
+    //   let offset = header.offsetHeight;
+
+    //   let elementPos = select(el).offsetTop;
+    //   window.scrollTo({
+    //     top: elementPos - offset,
+    //     behavior: "smooth",
+    //   });
+    // };
+
+    /**
+     * Toggle .header-scrolled class to #header when page is scrolled
+     */
+    // let selectHeader = select("#header");
+    // if (selectHeader) {
+    //   const headerScrolled = () => {
+    //     if (window.scrollY > 100) {
+    //       selectHeader.classList.add("header-scrolled");
+    //     } else {
+    //       selectHeader.classList.remove("header-scrolled");
+    //     }
+    //   };
+    //   window.addEventListener("load", headerScrolled);
+    //   onscroll(document, headerScrolled);
+    // }
+
+    /**
+     * Back to top button
+     */
+    // let backtotop = select(".back-to-top");
+    // if (backtotop) {
+    //   const toggleBacktotop = () => {
+    //     if (window.scrollY > 100) {
+    //       backtotop.classList.add("active");
+    //     } else {
+    //       backtotop.classList.remove("active");
+    //     }
+    //   };
+    //   window.addEventListener("load", toggleBacktotop);
+    //   onscroll(document, toggleBacktotop);
+    // }
+
+    /**
+     * Mobile nav toggle
+     */
+    // on("click", ".mobile-nav-toggle", function (e) {
+    //   logger.debug('-- mobile-nav-toggle')
+    //   select("#navbar").classList.toggle("navbar-mobile");
+    //   this.classList.toggle("bi-list");
+    //   this.classList.toggle("bi-x");
+    // });
+
+    /**
+     * Mobile nav dropdowns activate
+     */
+    // on(
+    //   "click",
+    //   ".navbar .dropdown > a",
+    //   function (e) {
+    //     logger.debug('Header dropdown')
+    //     if (select("#navbar").classList.contains("navbar-mobile")) {
+    //       e.preventDefault();
+    //       this.nextElementSibling.classList.toggle("dropdown-active");
+    //     }
+    //   },
+    //   true
+    // );
+
+    /**
+     * Scrool with ofset on links with a class name .scrollto
+     */
+    // on(
+    //   "click",
+    //   ".scrollto",
+    //   function (e) {
+    //     if (select(this.hash)) {
+    //       e.preventDefault();
+
+    //       let navbar = select("#navbar");
+    //       if (navbar.classList.contains("navbar-mobile")) {
+    //         navbar.classList.remove("navbar-mobile");
+    //         let navbarToggle = select(".mobile-nav-toggle");
+    //         navbarToggle.classList.toggle("bi-list");
+    //         navbarToggle.classList.toggle("bi-x");
+    //       }
+    //       scrollto(this.hash);
+    //     }
+    //   },
+    //   true
+    // );
+
+    /**
+     * Scroll with ofset on page load with hash links in the url
+     */
+    // window.addEventListener("load", () => {
+    //   if (window.location.hash && window.location.hash !== '#/') {
+    //     if (select(window.location.hash)) {
+    //       scrollto(window.location.hash);
+    //     }
+    //   }
+    // });
+
+    /**
+     * Preloader
+     */
+    // let preloader = select("#preloader");
+    // if (preloader) {
+    //   window.addEventListener("load", () => {
+    //     preloader.remove();
+    //   });
+    // }
+
+    /**
+     * Initiate  glightbox
+     */
+    // const glightbox = GLightbox({
+    //   selector: ".glightbox",
+    // });
+
+    /**
+     * Skills animation
+     */
+    // let skilsContent = select(".skills-content");
+    // if (skilsContent) {
+    //   new Waypoint({
+    //     element: skilsContent,
+    //     offset: "80%",
+    //     handler: function (direction) {
+    //       let progress = select(".progress .progress-bar", true);
+    //       progress.forEach((el) => {
+    //         el.style.width = el.getAttribute("aria-valuenow") + "%";
+    //       });
+    //     },
+    //   });
+    // }
+
+    // /**
+    //  * Porfolio isotope and filter
+    //  */
+    // window.addEventListener("load", () => {
+    //   let portfolioContainer = select(".portfolio-container");
+    //   if (portfolioContainer) {
+    //     let portfolioIsotope = new Isotope(portfolioContainer, {
+    //       itemSelector: ".portfolio-item",
+    //     });
+
+    //     let portfolioFilters = select("#portfolio-flters li", true);
+
+    //     on(
+    //       "click",
+    //       "#portfolio-flters li",
+    //       function (e) {
+    //         e.preventDefault();
+    //         portfolioFilters.forEach(function (el) {
+    //           el.classList.remove("filter-active");
+    //         });
+    //         this.classList.add("filter-active");
+
+    //         portfolioIsotope.arrange({
+    //           filter: this.getAttribute("data-filter"),
+    //         });
+    //         portfolioIsotope.on("arrangeComplete", function () {
+    //           AOS.refresh();
+    //         });
+    //       },
+    //       true
+    //     );
+    //   }
+    // });
+
+    /**
+     * Initiate portfolio lightbox
+     */
+    // const portfolioLightbox = GLightbox({
+    //   selector: ".portfolio-lightbox",
+    // });
+
+    /**
+     * Portfolio details slider
+     */
+    // new Swiper(".portfolio-details-slider", {
+    //   speed: 400,
+    //   loop: true,
+    //   autoplay: {
+    //     delay: 5000,
+    //     disableOnInteraction: false,
+    //   },
+    //   pagination: {
+    //     el: ".swiper-pagination",
+    //     type: "bullets",
+    //     clickable: true,
+    //   },
+    // });
+
+
+    /**
+     * Animation on scroll
+     */
+    // window.addEventListener("load", () => {
+    //   AOS.init({
+    //     duration: 1000,
+    //     easing: "ease-in-out",
+    //     once: true,
+    //     mirror: false,
+    //   });
+    // });
+  })();
+
+  /**
+   * Animation on scroll function and init
+   */
+
+  //  Aos.init();
+
+});
+</script>
