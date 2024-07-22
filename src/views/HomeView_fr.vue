@@ -1,5 +1,6 @@
 <template>
-  <HeaderComponent />
+  <HeaderComponent @signup="handleSignUp" />
+  <SignUpComponent ref="refSignUpComponent" />
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
@@ -7,18 +8,17 @@
       <div class="row">
         <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
           data-aos="fade-up" data-aos-delay="200">
-          <h1>Un Langage Full Stack pour le Web</h1>
-          <h2>Pour Application complète / Front End / Back End / Microservices
-
+          <h1>CYK Compta</h1>
+          <h2>Application Web de Comptabilité Générale et Auxiliaire
           </h2>
           <div class="d-flex justify-content-center justify-content-lg-start">
-            <a href="../docs/fr/guide/getting-started.html" class="btn-get-started">Get Started</a>
+            <a href="#" class="btn-get-started" @click="handleSignUp">S'inscrire</a>
             <a href="https://youtu.be/0tlvbGN5_c8" class="glightbox btn-watch-video"><i
-                class="bi bi-play-circle"></i><span>Watch Video</span></a>
+                class="bi bi-play-circle"></i><span>Regarder Vidéo</span></a>
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
-          <img src="../assets/img/LogoCYKLangDark.svg" class="img-fluid animated" alt="" />
+          <img src="../assets/img/hero-img.png" class="img-fluid animated" alt="" />
         </div>
       </div>
     </div>
@@ -32,60 +32,52 @@
       <div class="container">
 
         <div class="section-title">
-          <h2>Pourquoi CykLang</h2>
+          <h2>Pourquoi CYK Compta</h2>
         </div>
 
         <div class="row content">
           <div class="col-lg-6">
             <p>
-              Découvrez CykLang, l'outil révolutionnaire qui fusionne la rapidité de développement d'un Système de
-              Gestion
-              de Contenu (SGC) traditionnel avec la flexibilité d'un Headless CMS, offrant ainsi une expérience sans
-              précédent. Avec CykLang, la création de votre application est simplifiée grâce à un langage XML intégré,
-              vous permettant de personnaliser chaque aspect de votre front end. Obtenez le meilleur des deux mondes
-              avec
-              CykLang : rapidité et personnalisation inégalées.
+              CYK Compta est le premier module de la trilogie CykLang.net comprenant aussi CYK Factu et CYK Paye.
             </p>
             <ul>
               <li><i class="ri-check-double-line"></i>
-                <h5>Conteneurs Docker / Kubernetes</h5>
-                Déployez avec Docker ou Kubernetes. Toute l'application est contenue dans 2 conteneurs.
-                Un conteneur pour le runtime CYK et un conteneur pour la base de données Postgresql
-                (tables dans un format standard directement exploitables indépendamment du logiciel).
+                <h5>Application Web</h5>
+                Utilisable depuis tout ordinateur, tablette ou mobile connecté à Internet, sans nécessiter aucune
+                installation.
               </li>
               <li><i class="ri-check-double-line"></i>
-                <h5>Visual Studio Code</h5>
-                Développez dans un environnement de développement moderne pourvu de nombreux outils de productivité :
-                coloration syntaxique, aide à la saisie ...
+                <h5>Gamme complète de gestion</h5>
+                Avec les modules CYK Factu et CYK Paye, la gamme de logiciels CYKLang.net couvre l'ensemble
+                des besoins de gestion de l'entreprise.
               </li>
               <li><i class="ri-check-double-line"></i>
-                <h5>Outil en ligne de commande</h5>
-                La commande CYK et ses sous-commandes, intégrable dans vos scripts de productivité,
-                vous permet d'administrer votre application et vos serveurs CYK.
+                <h5>Développements spécifiques</h5>
+                Tous nos logiciels sont développés avec le nouveau langage CYKLang.net, offrant ainsi des avantages
+                incomparables
+                pour répondre aux besoins de développements spécifiques.
+              </li>
+              <li><i class="ri-check-double-line"></i>
+                <h5>Tarification attrayante</h5>
+                De la gratuité pour un usage limité en nombre d'écritures jusqu'à la possibilité d'un serveur privatif.
               </li>
             </ul>
           </div>
           <div class="col-lg-6 pt-4 pt-lg-0">
             <p>
-              Par rapport à l'utilisation d'un langage de programmation universel classique (PHP ou
-              Javascript/Typescript
-              ),
-              le langage XML intégré offre les avantages suivants:
+              CYK Compta intègre toutes les fonctionnalités que vous attendez d'une application de comptabilité:
             </p>
             <ul>
               <li><i class="ri-check-double-line"></i>
-                <h5>Prototypage rapide </h5>
-                Le langage XML intégré se charge de la création des tables et de l'interface entre le côté client
-                et le côté serveur. Plus besoin de spécifier un API ce qui permet de gagner un temps précieux en
-                programmation.
+                <h5>Importation et exportation de fichiers FEC</h5>
+                Transférez votre comptabilité en important un Fichier des Ecritures Comptables.
               </li>
               <li><i class="ri-check-double-line"></i>
-                <h5>Internationalisation de l'application</h5>
-                La traduction des messages peut se faire après coup sans alourdissement du code de l'application
-                dans des fichiers de langue séparés.
+                <h5>Modèles de pièces comptables</h5>
+                Paramétrez des modèles de pièces comptables pour permettre la saisie sans connaissance du débit/crédit.
               </li>
               <li><i class="ri-check-double-line"></i>
-                <h5>Meilleure sécurité</h5>
+                <h5></h5>
                 Le langage est limité dans ses fonctionnalités et est plus facile à sécuriser qu'un langage universel
               </li>
               <li><i class="ri-check-double-line"></i>
@@ -350,13 +342,16 @@
                 </li>
                 <li><i class="ri-check-double-line"></i>
                   <h5>Recherche multi-critères de pièce ou d'écriture </h5>
-                  Recherche par libellé partiel insensible à la casse (majuscule / minuscule) et aux accents, par compte général ou auxiliaire,
-                  par intervalle d'exercices comptables ou tous exercices, par intervalle de montant, ou par une combinaison de ces critères.
+                  Recherche par libellé partiel insensible à la casse (majuscule / minuscule) et aux accents, par compte
+                  général ou auxiliaire,
+                  par intervalle d'exercices comptables ou tous exercices, par intervalle de montant, ou par une
+                  combinaison de ces critères.
                 </li>
                 <li><i class="ri-check-double-line"></i>
                   <h5>Etats comptables et financiers</h5>
-                  Balance, journaux détaillés, grand livre des comptes, impression des documents fiscaux CERFA, 
-                  paramétrage d'états financiers avec rubriques définis par fourchettes de comptes ou formules de calcul, génération du FEC (fichier d'écritures comptables).
+                  Balance, journaux détaillés, grand livre des comptes, impression des documents fiscaux CERFA,
+                  paramétrage d'états financiers avec rubriques définis par fourchettes de comptes ou formules de
+                  calcul, génération du FEC (fichier d'écritures comptables).
 
                 </li>
               </ul>
@@ -467,6 +462,7 @@
 
 import HeaderComponent from "../components/HeaderComponent.vue";
 import FooterComponent from "../components/FooterComponent.vue";
+import SignUpComponent from "../components/SignUpComponent.vue";
 
 import "/src/assets/vendor/aos/aos.css";
 import "/src/assets/vendor/bootstrap/css/bootstrap.min.css";
@@ -485,7 +481,7 @@ import "swiper/css/pagination";
 import Glightbox from 'glightbox'
 
 import AOS from "aos";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 
 import { getLogger } from "loglevel";
 const logger = getLogger("HomeView.vue");
@@ -515,6 +511,13 @@ window.addEventListener('load', () => {
     mirror: false
   });
 });
+
+const refSignUpComponent = ref()
+const handleSignUp = () => {
+  if (refSignUpComponent.value) {
+    refSignUpComponent.value.signup()
+  }
+}
 
 </script>
 
