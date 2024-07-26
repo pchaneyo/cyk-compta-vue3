@@ -1,6 +1,8 @@
 <template>
-  <HeaderComponent @signup="handleSignUp" />
+  <HeaderComponent @signup="handleSignUp" @signin="handleSignIn" @signout="handleSignOut" @forgotpass="handleForgotPass"/>
   <SignUpComponent ref="refSignUpComponent" />
+  <SignInComponent ref="refSignInComponent"/>
+  <ForgotPassComponent ref="refForgotPassComponent"/>
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
@@ -11,10 +13,10 @@
           <h1>CYK Compta</h1>
           <h2>Application Web de Comptabilité Générale et Auxiliaire
           </h2>
-          <div class="d-flex justify-content-center justify-content-lg-start">
+          <div v-if="! useStore().currentUser" class="d-flex justify-content-center justify-content-lg-start">
             <a href="#" class="btn-get-started" @click="handleSignUp">S'inscrire</a>
-            <a href="https://youtu.be/0tlvbGN5_c8" class="glightbox btn-watch-video"><i
-                class="bi bi-play-circle"></i><span>Regarder Vidéo</span></a>
+            <a href="#" class="btn-watch-video" @click="handleSignIn"><i
+                class="bi bi-box-arrow-in-right"></i><span>Se connecter</span></a>
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
@@ -463,6 +465,9 @@
 import HeaderComponent from "../components/HeaderComponent.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import SignUpComponent from "../components/SignUpComponent.vue";
+import SignInComponent from "../components/SignInComponent.vue";
+import ForgotPassComponent from "../components/ForgotPassComponent.vue";
+import { fetchServer } from '../utility'
 
 import "/src/assets/vendor/aos/aos.css";
 import "/src/assets/vendor/bootstrap/css/bootstrap.min.css";
@@ -492,6 +497,10 @@ import { useI18n } from 'vue-i18n';
 const { locale } = useI18n()
 locale.value = 'fr'
 
+import { useStore, getCurrentUser } from "../utility";
+
+getCurrentUser()
+
 onMounted(() => {
 
   Glightbox({
@@ -516,6 +525,25 @@ const refSignUpComponent = ref()
 const handleSignUp = () => {
   if (refSignUpComponent.value) {
     refSignUpComponent.value.signup()
+  }
+}
+
+const refSignInComponent = ref()
+const handleSignIn = () => {
+  if (refSignInComponent.value) {
+    refSignInComponent.value.signin()
+  }
+}
+
+const handleSignOut = async () => {
+  await fetchServer("/api/signout")
+  window.location.reload()
+}
+
+const refForgotPassComponent = ref()
+const handleForgotPass = async () => {
+  if (refForgotPassComponent.value) {
+    refForgotPassComponent.value.forgotpass()
   }
 }
 

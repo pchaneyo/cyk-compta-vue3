@@ -23,7 +23,15 @@
           </li>
           <li><a class="nav-link scrollto" href="#cli">CLI</a></li>
           <li><a class="nav-link scrollto" href="#schema">DevTools</a></li>
-          <li><a class="nav-link scrollto getstarted" href="#" @click="handleSignup">S'inscrire</a></li>
+          <template v-if="! useStore().currentUser">
+            <li><a class="nav-link scrollto getstarted" href="#" @click="handleSignUp">S'inscrire</a></li>
+            <li><a class="nav-link scrollto" href="#" @click="handleSignIn">Se connecter</a></li>
+            <li><a class="nav-link scrollto" href="#" @click="handleForgotPass">Mot de passe oublié</a></li>
+          </template>
+          <template v-else>
+            <li><a class="nav-link scrollto" href="#" @click="handleSignOut">Déconnecter</a></li>
+          </template>
+
           <li class="dropdown">
             <a class="nav-link" href=""> <span>{{ $t('language') }}</span><i class="bi bi-chevron-down"></i> </a>
             <ul>
@@ -59,6 +67,7 @@ const logger = getLogger("HeaderComponent.vue");
 logger.setLevel("debug");
 
 import { onMounted } from "vue";
+import { useStore } from "../utility";
 
 onMounted(() => {
 
@@ -201,10 +210,22 @@ onMounted(() => {
 
 });
 
-const emits = defineEmits(['signup'])
+const emits = defineEmits(['signup', 'signin', 'signout', 'forgotpass'])
 
-const handleSignup = () => {
+const handleSignUp = () => {
   emits('signup')
+}
+
+const handleSignIn = () => {
+  emits('signin')
+}
+
+const handleSignOut = () => {
+  emits('signout')
+}
+
+const handleForgotPass = () => {
+  emits('forgotpass')
 }
 
 </script>

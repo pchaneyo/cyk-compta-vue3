@@ -126,7 +126,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="validationModalLabel">Félicitations !</h5>
+                        <h5 class="modal-title" id="validationModalLabel">Félicitations ! Votre inscription a été validée.</h5>
                         <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -135,7 +135,9 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click="signin">Se connecter</button>
+                        <RecaptchaComponent v-if="showRecaptcha" class="mb-3" ref="refRecaptchaComponent"
+                        @tokenObtained="handleTokenObtained" />
+                        <button v-if="submitVisible" type="button" class="btn btn-primary" @click="signin">Se connecter</button>
                     </div>
                 </div>
             </div>
@@ -148,7 +150,7 @@ import { ref } from 'vue';
 import RecaptchaComponent from './RecaptchaComponent.vue'
 import LoadingOverlay from './LoadingOverlay.vue'
 import loglevel from 'loglevel'
-import { devMode } from '../utility';
+import { devMode, fetchServer } from '../utility';
 const logger = loglevel.getLogger('SignUpComponent')
 logger.setLevel('debug')
 // import { useRecaptcha } from '../composables/useRecaptcha';
@@ -192,18 +194,13 @@ const submitEmail = async () => {
 
         isLoading.value = true
         showRecaptcha.value = false
+        submitVisible.value = false
 
-        const url = devMode('/api/signup_email')
-        logger.debug('url', url)
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email.value, username: username.value, recaptchaToken: recaptchaToken.value })
-        });
-        if (response.status !== 200) {
-            const data = await response.json()
-            throw `${data.message}`
-        }
+        await fetchServer("/api/signup_email", undefined, "post", {
+            email: email.value,
+            username: username.value,
+            recaptchaToken: recaptchaToken.value
+        })
 
         alert_content.value = `Un code de validation a été envoyé à ${email.value}`
         alert_class.value = 'alert-success'
@@ -214,27 +211,24 @@ const submitEmail = async () => {
         console.error('reCAPTCHA error:', error);
         alert_content.value = error as string
         alert_class.value = 'alert-danger'
-        showRecaptcha.value = true
     }
     finally {
+        showRecaptcha.value = true
         isLoading.value = false
     }
 };
 
+/**
+ * 
+ */
 const validateEmail = async () => {
     try {
         isLoading.value = true
 
-        const url = devMode('/api/signup_code')
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email.value, validationCode: validationCode.value })
+        await fetchServer("/api/signup_code", undefined, "post", {
+            email: email.value,
+            validationCode: validationCode.value
         })
-        if (response.status !== 200) {
-            const data = await response.json()
-            throw `${data.message}`
-        }
 
         alert_content.value = `L'adresse mail ${email.value} a été validée`
         alert_class.value = 'alert-success'
@@ -251,6 +245,9 @@ const validateEmail = async () => {
     }
 }
 
+/**
+ * 
+ */
 const submitForm = async () => {
 
     if (password.value.trim().length < 8) {
@@ -267,24 +264,19 @@ const submitForm = async () => {
     try {
         isLoading.value = true
 
-        const url = devMode('/api/signup_form')
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: email.value, surname: surname.value, name: name.value,
-                organization: organization.value, tel: tel.value, password: password.value
-            })
+        await fetchServer("/api/signup_form", undefined, "post", {
+            email: email.value,
+            surname: surname.value, name: name.value,
+            organization: organization.value, 
+            tel: tel.value, 
+            password: password.value
         })
-        if (response.status !== 200) {
-            const data = await response.json()
-            throw `${data.message}`
-        }
 
         alert_content.value = `Votre compte utilisateur ${username.value} attaché à ${email.value} a été créé avec succès`
         alert_class.value = 'alert-success'
 
         step.value = 4
+        showRecaptcha.value = true
     }
     catch (error) {
         logger.error(error)
@@ -301,16 +293,15 @@ const submitForm = async () => {
  */
 const signin = async () => {
     try {
-        const url = devMode('/api/signin')
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({user_name: username.value, user_email: email.value, user_password: password.value})
-        })
+        isLoading.value = true
+        showRecaptcha.value = false
+        submitVisible.value = false
 
-        if (response.status !== 200) {
-            throw response.statusText
-        }
+        await fetchServer("/api/signin_username", undefined, "post", {
+            user_name: username.value, 
+            user_password: password.value,
+            recaptchaToken: recaptchaToken.value 
+        })
 
         const homepage = devMode('/')
         window.open(homepage)
@@ -320,6 +311,10 @@ const signin = async () => {
     catch (error) {
         alert_content.value = error as string
         alert_class.value = 'alert-danger'
+    }
+    finally {
+        showRecaptcha.value = true
+        isLoading.value = false
     }
 }
 
