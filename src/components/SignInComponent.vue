@@ -70,7 +70,7 @@ const submitUsername = async () => {
 
         step.value = 0
 
-        window.open(devMode('/'), 'cyk-compta')
+        window.open(devMode('/cyk/#/run/accounting'), 'cyk-compta')
         window.location.reload()
     }
     catch (err) {

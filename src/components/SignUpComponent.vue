@@ -269,7 +269,10 @@ const submitForm = async () => {
             surname: surname.value, name: name.value,
             organization: organization.value, 
             tel: tel.value, 
-            password: password.value
+            password: password.value,
+            welcome_subject: welcome_subject,
+            welcome_text: welcome_text,
+            welcome_html: welcome_html
         })
 
         alert_content.value = `Votre compte utilisateur ${username.value} attaché à ${email.value} a été créé avec succès`
@@ -303,8 +306,8 @@ const signin = async () => {
             recaptchaToken: recaptchaToken.value 
         })
 
-        const homepage = devMode('/')
-        window.open(homepage)
+        const homepage = devMode('/cyk/#/run/accounting')
+        window.open(homepage, 'cyk-compta')
 
         step.value = 0
     }
@@ -340,6 +343,82 @@ const handleTokenObtained = (token: string) => {
     submitVisible.value = true
     recaptchaToken.value = token
 }
+
+/**
+ * welcome message
+ */
+
+const server_url = 'https://compta.cyklang.net'
+
+const welcome_subject = `Merci d'avoir choisi CYK Compta !`;
+
+const welcome_text = `Félicitations !
+
+Vous êtes maintenant inscrit à ${server_url}
+
+Votre nom d'utilisateur est : ${username.value}
+
+Merci d'avoir choisi un logiciel CykLang.net !
+
+`;
+
+
+const welcome_html = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur CYK Compta</title>
+</head>
+<body>
+    <table style="width: 100%; max-width: 600px; margin: auto; border-collapse: collapse; font-family: Arial, sans-serif;">
+        <tr>
+            <td style="background-color: #f7f7f7; padding: 20px; text-align: center;">
+                <h1>Bienvenue sur CYK Compta !</h1>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px; background-color: #ffffff;">
+                <p>Bonjour ${surname.value} ${name.value} ,</p>
+                <p>Nous vous souhaitons la bienvenue sur CYK Compta et vous remercions de votre inscription !</p>
+                <p>Votre compte a été créé avec succès et vous pouvez dès à présent accéder à nos services en vous connectant avec 
+                le nom d'utilisateur <i>${username.value}</i> et le mot de passe que vous avez choisi lors de l'inscription.</p>
+                
+                <h2>Voici quelques étapes pour bien démarrer :</h2>
+                <ol>
+                    <li><strong>Connectez-vous à votre compte</strong> : Visitez notre site <a href="${server_url}/cyk/#/run/accounting" target="_blank">${server_url}/cyk/#/run/accounting</a> et connectez-vous avec vos identifiants.</li>
+                    <li><strong>Explorez nos fonctionnalités</strong> : Découvrez les outils et fonctionnalités disponibles pour simplifier votre gestion comptable.</li>
+                    <li><strong>Accédez à notre support</strong> : Si vous avez des questions ou besoin d'aide, n'hésitez pas à consulter notre <a href="${server_url}" target="_blank">site web</a> ou à nous contacter directement.</li>
+                </ol>
+
+                <h2>Ressources utiles pour vous :</h2>
+                <ul>
+                    <li><a href="${server_url}" target="_blank">Guide de démarrage rapide [ à venir ]</a></li>
+                    <li><a href="${server_url}" target="_blank">Vidéos tutoriels [ à venir ]</a></li>
+                    <li><a href="${server_url}" target="_blank">Blog de conseils comptables [ à venir ]</a></li>
+                </ul>
+
+                <p>Nous sommes ravis de vous compter parmi nos utilisateurs et nous nous engageons à vous fournir un service de qualité pour répondre à tous vos besoins comptables.</p>
+                <p>Si vous avez la moindre question ou besoin d'assistance, notre équipe de support est à votre disposition.</p>
+                <p>Merci de votre confiance et à très bientôt sur CYK Compta !</p>
+
+                <p>Cordialement,</p>
+                <p>L'équipe CYK Compta<br>
+                <a href="${server_url}" target="_blank">${server_url}</a><br>
+                <a href="mailto:pchaneyo@cyklang.net">pchaneyo@cyklang.net</a></p>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: #f7f7f7; padding: 10px; text-align: center; font-size: 12px;">
+                <p>Ce message a été envoyé automatiquement, veuillez ne pas y répondre directement.</p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+`
 
 </script>
 
