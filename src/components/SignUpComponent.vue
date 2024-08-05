@@ -307,7 +307,13 @@ const signin = async () => {
         })
 
         const homepage = devMode('/cyk/#/run/accounting')
-        window.open(homepage, 'cyk-compta')
+        const newtab = window.open(homepage, 'cyk-compta')
+        if (newtab === null) {
+            window.location.href = homepage
+        }
+        else {
+            window.location.reload()
+        }
 
         step.value = 0
     }

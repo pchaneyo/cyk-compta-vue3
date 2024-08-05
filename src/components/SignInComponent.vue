@@ -70,8 +70,15 @@ const submitUsername = async () => {
 
         step.value = 0
 
-        window.open(devMode('/cyk/#/run/accounting'), 'cyk-compta')
-        window.location.reload()
+        const href = devMode('/cyk/#/run/accounting')
+        const newtab = window.open(href, 'cyk-compta')
+        if (newtab === null) {
+            window.location.href = href
+        }
+        else {
+            window.location.reload()
+        }
+        
     }
     catch (err) {
         logger.error(err)
