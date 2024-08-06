@@ -17,7 +17,8 @@
                         <div v-if="alert_content" :class="['alert', alert_class]">{{ alert_content }}</div>
                         <div class="mb-3">
                             <label for="username">Nom d'utilisateur</label>
-                            <input class="form-control" id="username" v-model="username" required>
+                            <input class="form-control" id="username" v-model="username" required inputmode="text"
+                                @input="username = username.toLowerCase()">
                         </div>
                         <div class="mb-3">
                             <label for="password">Mot de Passe</label>
@@ -62,10 +63,10 @@ const submitUsername = async () => {
         showRecaptcha.value = false
         submitVisible.value = false
 
-        await fetchServer("/api/signin_username", undefined, "post", { 
-            user_name: username.value, 
-            user_password: password.value, 
-            recaptchaToken: recaptchaToken.value 
+        await fetchServer("/api/signin_username", undefined, "post", {
+            user_name: username.value,
+            user_password: password.value,
+            recaptchaToken: recaptchaToken.value
         })
 
         step.value = 0
@@ -78,7 +79,7 @@ const submitUsername = async () => {
         else {
             window.location.reload()
         }
-        
+
     }
     catch (err) {
         logger.error(err)

@@ -26,7 +26,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="username">Nom d'utilisateur</label>
-                                    <input class="form-control" id="username" v-model="username" required>
+                                    <input class="form-control" id="username" v-model="username" required
+                                        @input="username = username.toLowerCase()">
                                 </div>
                                 <RecaptchaComponent v-if="showRecaptcha" class="mb-3" ref="refRecaptchaComponent"
                                     @tokenObtained="handleTokenObtained" />
@@ -126,7 +127,8 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="validationModalLabel">Félicitations ! Votre inscription a été validée.</h5>
+                        <h5 class="modal-title" id="validationModalLabel">Félicitations ! Votre inscription a été
+                            validée.</h5>
                         <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -136,8 +138,9 @@
                     </div>
                     <div class="modal-footer">
                         <RecaptchaComponent v-if="showRecaptcha" class="mb-3" ref="refRecaptchaComponent"
-                        @tokenObtained="handleTokenObtained" />
-                        <button v-if="submitVisible" type="button" class="btn btn-primary" @click="signin">Se connecter</button>
+                            @tokenObtained="handleTokenObtained" />
+                        <button v-if="submitVisible" type="button" class="btn btn-primary" @click="signin">Se
+                            connecter</button>
                     </div>
                 </div>
             </div>
@@ -267,8 +270,8 @@ const submitForm = async () => {
         await fetchServer("/api/signup_form", undefined, "post", {
             email: email.value,
             surname: surname.value, name: name.value,
-            organization: organization.value, 
-            tel: tel.value, 
+            organization: organization.value,
+            tel: tel.value,
             password: password.value,
             welcome_subject: welcome_subject,
             welcome_text: welcome_text,
@@ -301,9 +304,9 @@ const signin = async () => {
         submitVisible.value = false
 
         await fetchServer("/api/signin_username", undefined, "post", {
-            user_name: username.value, 
+            user_name: username.value,
             user_password: password.value,
-            recaptchaToken: recaptchaToken.value 
+            recaptchaToken: recaptchaToken.value
         })
 
         const homepage = devMode('/cyk/#/run/accounting')

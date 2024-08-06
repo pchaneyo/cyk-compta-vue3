@@ -1,8 +1,9 @@
 <template>
-  <HeaderComponent @signup="handleSignUp" @signin="handleSignIn" @signout="handleSignOut" @forgotpass="handleForgotPass"/>
+  <HeaderComponent @signup="handleSignUp" @signin="handleSignIn" @signout="handleSignOut"
+    @forgotpass="handleForgotPass" />
   <SignUpComponent ref="refSignUpComponent" />
-  <SignInComponent ref="refSignInComponent"/>
-  <ForgotPassComponent ref="refForgotPassComponent"/>
+  <SignInComponent ref="refSignInComponent" />
+  <ForgotPassComponent ref="refForgotPassComponent" />
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
@@ -13,10 +14,15 @@
           <h1>CYK Compta</h1>
           <h2>Application Web de Comptabilité Générale et Auxiliaire
           </h2>
-          <div v-if="! useStore().currentUser" class="d-flex justify-content-center justify-content-lg-start">
+          <div v-if="!useStore().currentUser" class="d-flex justify-content-center justify-content-lg-start">
             <a href="#" class="btn-get-started" @click="handleSignUp">S'inscrire</a>
-            <a href="#" class="btn-watch-video" @click="handleSignIn"><i
-                class="bi bi-box-arrow-in-right"></i><span>Se connecter</span></a>
+            <a href="#" class="btn-watch-video" @click="handleSignIn"><i class="bi bi-box-arrow-in-right"></i><span>Se
+                connecter</span></a>
+          </div>
+          <div v-else class="d-flex justify-content-center justify-content-lg-start">
+            <a href="#" class="btn-get-started" @click="handleOpen">Ouvrir</a>
+            <a href="#" class="btn-watch-video" @click="handleSignOut"><i
+                class="bi bi-box-arrow-right"></i><span>Déconnecter</span></a>
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
@@ -467,7 +473,7 @@ import FooterComponent from "../components/FooterComponent.vue";
 import SignUpComponent from "../components/SignUpComponent.vue";
 import SignInComponent from "../components/SignInComponent.vue";
 import ForgotPassComponent from "../components/ForgotPassComponent.vue";
-import { fetchServer } from '../utility'
+import { devMode, fetchServer } from '../utility'
 
 import "/src/assets/vendor/aos/aos.css";
 import "/src/assets/vendor/bootstrap/css/bootstrap.min.css";
@@ -538,6 +544,17 @@ const handleSignIn = () => {
 const handleSignOut = async () => {
   await fetchServer("/api/signout")
   window.location.reload()
+}
+
+const handleOpen = () => {
+  const href = devMode('/cyk/#/run/accounting')
+  const newtab = window.open(href, 'cyk-compta')
+  if (newtab === null) {
+    window.location.href = href
+  }
+  else {
+    window.location.reload()
+  }
 }
 
 const refForgotPassComponent = ref()
